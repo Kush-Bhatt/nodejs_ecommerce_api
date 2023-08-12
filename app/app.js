@@ -3,6 +3,7 @@ import dbConnect from '../config/dbConnect.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import userRoutes from '../routes/users.js'; 
+import productRoutes from '../routes/products.js'; 
 import { globalErrHandler, notFound } from '../middlewares/globalErrHandler.js';
 
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(morgan('dev'));
 
 //Routes Middlewares
 app.use('/api/v1/users',userRoutes);
+app.use('/api/v1/products',productRoutes);
 
 //Err Middlewares
 app.use(notFound);

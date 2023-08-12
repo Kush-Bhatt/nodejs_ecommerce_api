@@ -7,7 +7,7 @@ export const isLoggedIn = (req, res, next) => {
 
     // verify that token
     const decodedUser = verifyToken(token);
-
+    
     if(!decodedUser) {
         throw new Error('Invalid/Expired Token, please try again')
     } else {

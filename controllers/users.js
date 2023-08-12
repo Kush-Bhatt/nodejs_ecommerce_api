@@ -2,9 +2,8 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs'
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
-import { getTokenFromHeader } from '../utils/getTokenFromHeader.js';
-import { verifyToken } from '../utils/verifyToken.js';
-/*
+
+/**
  * @desc Register user
  * @route POST /api/v1/users/register
  * @access Private/Admin
@@ -36,7 +35,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-/*
+/**
  * @desc Login user
  * @route POST /api/v1/users/login
  * @access Public
@@ -56,7 +55,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     }
 });
 
-/*
+/**
  * @desc Get User Profile
  * @route GET /api/v1/users/profile
  * @access Private
@@ -66,7 +65,7 @@ export const getUserProfile = asyncHandler(async (req,res) => {
     const user = await User.findById(req.userAuthId);
     res.json({
         status: 'Success',
-        message: 'Use profile fetched successfully',
+        message: 'User profile fetched successfully',
         user
     })
 });
