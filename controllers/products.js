@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
+import Brand from '../models/Brand.js';
+import Color from '../models/Color.js';
 
 /**
  * @desc Create new Product
@@ -34,6 +36,22 @@ export const createProduct = asyncHandler(async (req, res) => {
         throw new Error('Category not found, please create category first or check category name"');
     }
 
+    //find the brand
+    const brandFound = await Brand.findOne({
+        name: brand.toLowerCase()
+    });
+    if (!brandFound) {
+        throw new Error("Brand not found, please create brand first or check brand name");
+    }
+
+    //find the brand
+    const colorFound = await Color.findOne({
+        name: colors.toLowerCase()
+    });
+    if (!colorFound) {
+        throw new Error("Color not found, please create color first or check color name");
+    }
+
     //Create new Product
     const product = await Product.create({
         name,
@@ -50,6 +68,14 @@ export const createProduct = asyncHandler(async (req, res) => {
     //Add the product to the category
     categoryFound.products.push(product._id);
     await categoryFound.save();
+
+    // Add product to the brand
+    brandFound.products.push(product._id);
+    await brandFound.save();
+
+    // Add product to the color
+    colorFound.products.push(product._id);
+    await colorFound.save();
 
     res.json({
         status: 'Success',
@@ -151,17 +177,21 @@ export const getProducts = asyncHandler(async (req, res) => {
  * @route GET /api/v1/products/:id
  * @access Public
  */
-export const getProduct = asyncHandler(async (req, res) => {
+export const getSingleProduct = asyncHandler(async (req, res) => {
     console.log(req.params.id);
     const product = await Product.findById(req.params.id);
-    if (!product) {
-        throw new Error("Product not found");
+    if (!category) {
+        res.json({
+            status: 'Success',
+            message: 'Product does not exist'
+        })
+    } else {
+        res.json({
+            status: 'Success',
+            message: 'Product fetched successfully',
+            product
+        })
     }
-    res.json({
-        status: 'Success',
-        message: 'Product fetched successfully',
-        product
-    });
 })
 
 /**
@@ -173,7 +203,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     const updateFields = req.body;
     const product = await Product.findByIdAndUpdate(req.params.id, updateFields, {
         new: true
-    })
+    });
 
     if(!product) {
         throw new Error("Product not found");

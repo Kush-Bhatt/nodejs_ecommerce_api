@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import userRoutes from '../routes/users.js'; 
 import productRoutes from '../routes/products.js'; 
 import categoryRoutes from '../routes/categories.js'; 
+import brandRoutes from '../routes/brands.js'; 
+import colorRoutes from '../routes/colors.js'; 
 import { globalErrHandler, notFound } from '../middlewares/globalErrHandler.js';
 
 dotenv.config();
@@ -18,6 +20,8 @@ app.use(morgan('dev'));
 app.use('/api/v1/users',userRoutes);
 app.use('/api/v1/products',productRoutes);
 app.use('/api/v1/categories',categoryRoutes);
+app.use('/api/v1/brands',brandRoutes);
+app.use('/api/v1/colors',colorRoutes);
 
 //Err Middlewares
 app.use(notFound);

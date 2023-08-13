@@ -72,7 +72,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
     const { name } = req.body;
     const category = await Category.findByIdAndUpdate(req.params.id,
         {
-            name
+            name : name.toLowerCase()
         },
         {
             new: true
@@ -92,15 +92,10 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
 /**
  * @desc Delete a category
- * @route DELETE /api/v1/categories/id
+ * @route DELETE /api/v1/categories/:id
  * @access Private/Admin
  */
 export const deleteCategory = asyncHandler(async (req, res) => {
-
-    /**
-    * @TODO Delete products related to the respective Category
-    */
-
     await Category.findByIdAndDelete(req.params.id);
 
     res.json({
