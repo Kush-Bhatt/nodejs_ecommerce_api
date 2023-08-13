@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 
 /**
  * @desc Create new Product
@@ -27,6 +28,12 @@ export const createProduct = asyncHandler(async (req, res) => {
         // })
     }
 
+    //find the category
+    const categoryFound = await Category.findOne({name : category.toLowerCase()});
+    if(!categoryFound) {
+        throw new Error('Category not found, please create category first or check category name"');
+    }
+
     //Create new Product
     const product = await Product.create({
         name,
@@ -40,7 +47,9 @@ export const createProduct = asyncHandler(async (req, res) => {
         totalQty
     });
 
-    //Push the product into category
+    //Add the product to the category
+    categoryFound.products.push(product._id);
+    await categoryFound.save();
 
     res.json({
         status: 'Success',
@@ -139,7 +148,7 @@ export const getProducts = asyncHandler(async (req, res) => {
 
 /**
  * @desc Get single product
- * @route GET /api/products/:id
+ * @route GET /api/v1/products/:id
  * @access Public
  */
 export const getProduct = asyncHandler(async (req, res) => {
@@ -157,7 +166,7 @@ export const getProduct = asyncHandler(async (req, res) => {
 
 /**
  * @desc update product
- * @route PUT /api/products/:id/update
+ * @route PUT /api/v1/products/:id/update
  * @access Private/Admin
  */
 export const updateProduct = asyncHandler(async (req, res) => {
@@ -165,6 +174,10 @@ export const updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByIdAndUpdate(req.params.id, updateFields, {
         new: true
     })
+
+    if(!product) {
+        throw new Error("Product not found");
+    }
 
     res.json({
         status: 'Success',
@@ -175,7 +188,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
 /**
  * @desc delete product
- * @route DELETE /api/products/:id/delete
+ * @route DELETE /api/v1/products/:id
  * @access Private/Admin
  */
 export const deleteProduct = asyncHandler(async (req, res) => {
@@ -186,3 +199,21 @@ export const deleteProduct = asyncHandler(async (req, res) => {
         message: 'Product deleted successfully',
     });
 })
+
+/**
+ * @desc delete product related to category
+ * @route DELETE /api/v1/products/bycategory/:id
+ * @access Private/Admin
+ */
+export const deleteProductsByCategory = asyncHandler(async (req, res) => {
+    const category = await Category.findById(req.params.id);
+    // const products = category.products;
+    console.log(category);
+
+    await Product.deleteMany({category : { $regex: category.name, $options: "i" }});
+
+    res.json({
+        status: 'Success',
+        message: 'Product deleted successfully',
+    });
+});
