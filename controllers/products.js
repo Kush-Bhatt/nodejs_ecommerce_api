@@ -159,7 +159,7 @@ export const getProducts = asyncHandler(async (req, res) => {
         }
     }
 
-    const products = await productQuery;
+    const products = await productQuery.populate('reviews');
     console.log(products);
 
     res.json({
@@ -179,8 +179,8 @@ export const getProducts = asyncHandler(async (req, res) => {
  */
 export const getSingleProduct = asyncHandler(async (req, res) => {
     console.log(req.params.id);
-    const product = await Product.findById(req.params.id);
-    if (!category) {
+    const product = await Product.findById(req.params.id).populate('reviews');
+    if (!product) {
         res.json({
             status: 'Success',
             message: 'Product does not exist'
