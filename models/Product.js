@@ -83,6 +83,10 @@ ProductSchema.virtual('averageRatings').get(function () {
     const averageRatings = Number(totalRating / product?.totalReviews).toFixed(1);
     return averageRatings;
 });
+ProductSchema.virtual('qtyLeft').get(function() {
+    const product = this;
+    return product.totalQty - product.totalSold;
+});
 
 const Product = mongoose.model('Product', ProductSchema);
 

@@ -4,6 +4,6 @@ import { isLoggedIn } from "../middlewares/isLoggedIn.js";
 
 const reviewRoutes = express.Router();
 
-reviewRoutes.post('/:productID', isLoggedIn, createReview);
+reviewRoutes.post('/:productId', isLoggedIn, createReview);
 
 export default reviewRoutes;
