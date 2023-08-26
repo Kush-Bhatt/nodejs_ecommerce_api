@@ -9,10 +9,10 @@ import asyncHandler from 'express-async-handler';
  */
 export const createReview = asyncHandler(async (req, res) => {
     const {message, rating} = req.body;
-    const {productID} = req.params;
+    const {productId} = req.params;
 
     //product exist exit
-    const productFound = await Product.findById(productID).populate('reviews');
+    const productFound = await Product.findById(productId).populate('reviews');
     if(!productFound) {
         throw new Error('Product Not Found');
     }
